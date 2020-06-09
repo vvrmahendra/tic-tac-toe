@@ -38,64 +38,81 @@ document.getElementById('start').addEventListener('click', startGame);
 function startGame(){
 
   var n = Math.floor(document.getElementById('size').value);
+  var p1 = document.getElementById('p1').value;
+  var p2 = document.getElementById('p2').value;
 
-  var grid = '';
-  for (var i = 0; i < n; i++){
-    var block = "<div class = 'layer'>";
-    for (var j = 0; j < n; j++){
-      block += `<button class="btn btn-outline-primary tile" type="button" name="button" id = '${(i*n)+j}'></button>`;
-    }
-    block += '</div>';
-    grid += block;
+  if (p1 === ''){
+    p1 = 'Player1'
   }
-  grid += "<h2></h2>"
 
-  // console.log(grid);
-  document.getElementById('board').innerHTML = grid;
-  document.querySelector('a').innerHTML = 'Play Again';
-  // document.querySelectorAll('.layer').style.padding = '3px';
+  if (p2 === ''){
+      p2 = 'Player2'
+    }
 
 
-
-  var game = new board(n);
-  var tiles = document.querySelectorAll('.tile');
-  var l = tiles.length;
-  var count = 0;
-  for (var i = 0; i < l; i++ ){
-    tiles[i].addEventListener('click', function(event) {
-      var player = count%2;
-      var curName = 'Player1';
-      var id = this.id;
-      var id = Math.floor(id);
-      console.log(`id is ${id} `);
-      var status = 0;
-      if ( player === 0){
-        this.innerHTML = 'X';
-        status = game.move(Math.floor(id/n), id%n, 0);
-        curName = 'Player1';
-        this.disabled = true;
+  if (n < 3){
+    document.getElementById('board').innerHTML = "<h3>Please enter value greater then 2</h2>";
+    document.querySelector('a').innerHTML = 'Home';
+  }
+  else{
+    var grid = '';
+    for (var i = 0; i < n; i++){
+      var block = "<div class = 'layer'>";
+      for (var j = 0; j < n; j++){
+        block += `<button class="btn btn-outline-primary tile" type="button" name="button" id = '${(i*n)+j}'></button>`;
       }
-      else{
-        this.innerHTML = 'O';
-        status = game.move(Math.floor(id/n), id%n, 1);
-        curName = 'Player2';
-        this.disabled = true;
-      }
+      block += '</div>';
+      grid += block;
+    }
+
+    grid += "<h2></h2>"
+
+    // console.log(grid);
+    document.getElementById('board').innerHTML = grid;
+    document.querySelector('a').innerHTML = 'Play Again';
+
+    // document.querySelectorAll('.layer').style.padding = '3px';
 
 
-      if (status !== -1){
-          console.log(player);
-          for (var j = 0; j < l; j++){
-            tiles[j].disabled = true;
-          }
-          document.querySelector('center h2').innerHTML = `${curName} Won!🚩`;
-      }
-      count += 1
-      if (count === n*n){
-        document.querySelector('center h2').innerHTML = `Draw! 🚩`;
-      }
-      this.style.fontSize = '50px';
-    })
+    var game = new board(n);
+    var tiles = document.querySelectorAll('.tile');
+    var l = tiles.length;
+    var count = 0;
+    for (var i = 0; i < l; i++ ){
+      tiles[i].addEventListener('click', function(event) {
+        var player = count%2;
+        var curName = p1;
+        var id = this.id;
+        var id = Math.floor(id);
+        var status = 0;
+        if ( player === 0){
+          this.innerHTML = 'X';
+          status = game.move(Math.floor(id/n), id%n, 0);
+          curName = p1;
+          this.disabled = true;
+        }
+        else{
+          this.innerHTML = 'O';
+          status = game.move(Math.floor(id/n), id%n, 1);
+          curName = p2;
+          this.disabled = true;
+        }
+
+
+        if (status !== -1){
+
+            for (var j = 0; j < l; j++){
+              tiles[j].disabled = true;
+            }
+            document.querySelector('center h2').innerHTML = `${curName} Won!🚩`;
+        }
+        count += 1
+        if (count === n*n){
+          document.querySelector('center h2').innerHTML = `Draw! 🚩`;
+        }
+        this.style.fontSize = '50px';
+      })
+  }
   }
 
 }
